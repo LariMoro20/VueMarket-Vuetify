@@ -22,15 +22,21 @@ const router = createRouter({
       path: '/',
       component: () => import('@/layouts/MainLayout.vue'),
       children: [{
-        path: '',
-        name: 'home',
+        path: '/dashboard',
+        name: 'dashboard',
         component: () => import('@/pages/HomePage.vue'),
       },
       {
-        path: '/categorias',
-        name: 'categorias',
+        path: '/categories',
+        name: 'categories',
         component: () => import('@/pages/CategoriesPage.vue'),
-      }]
+      },
+      {
+        path: '/products',
+        name: 'products',
+        component: () => import('@/pages/ProductsPage.vue'),
+      },
+      ]
     }],
 })
 
