@@ -9,7 +9,7 @@ Uso e instalação de fontes:
 - npm i --save-dev unplugin-fonts
 - npm i @fontsource/roboto
 
-Falar sobre a criação dos componentes com vuetify, de acordo com codigo do projeto.
+Falar sobre a criação dos componentes com vuetify, de acordo com codigo do projeto (componentes do vuetify começam com prefixo "v-").
 
 Adicionar unplugin-auto-import
 - npm i -D unplugin-auto-import
