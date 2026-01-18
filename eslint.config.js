@@ -11,22 +11,15 @@ export default defineConfig([
   },
   {
     globals: {
-
       ...globals.browser,
-
       "ref": "readonly",
-
       rules: {
-
         'vue/multi-word-component-names': 3, // 0 disables the rule
-
       },
 
     },
   },
-
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
-
   {
     languageOptions: {
       globals: {
@@ -34,10 +27,7 @@ export default defineConfig([
       },
     },
   },
-
   js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
-
   skipFormatting,
-
 ])

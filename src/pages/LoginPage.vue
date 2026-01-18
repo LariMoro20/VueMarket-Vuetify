@@ -24,7 +24,7 @@
               variant="outlined"
             ></v-text-field>
             <v-text-field
-              :rules="[rules.required, rules.minLength(8)]"
+              :rules="[rules.required, rules.password]"
               label="Senha"
               v-model="formData.passwd"
               required

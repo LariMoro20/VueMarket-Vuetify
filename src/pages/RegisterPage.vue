@@ -15,7 +15,7 @@
       </v-col>
       <v-col class="d-flex align-center justify-center" md="6" sm="12">
         <div class="w-100" style="max-width: 400px">
-          <v-form class="d-flex flex-column ga-3" v-model="valid" @submit="handleSubmit">
+          <v-form class="d-flex flex-column ga-3" v-model="valid" @submit.prevent="handleSubmit">
             <div class="text-center mb-6">
               <h2 class="text-primary mb-1">Registrar</h2>
               <p class="text-grey-darken-1">Cadastre-se para começar a usar</p>
@@ -37,17 +37,17 @@
             ></v-text-field>
 
             <v-text-field
-              :rules="[rules.required, rules.minLength(8)]"
+              :rules="[rules.required, rules.password]"
               label="Senha"
-              v-model="formData.passwd"
+              v-model="formData.password"
               required
               variant="outlined"
-              :append-inner-icon="showpasswd ? 'mdi-eye-off' : 'mdi-eye'"
-              :type="showpasswd ? 'text' : 'password'"
+              :append-inner-icon="showpassword ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="showpassword ? 'text' : 'password'"
               density="compact"
               placeholder="Enter your password"
               prepend-inner-icon="mdi-lock-outline"
-              @click:append-inner="showpasswd = !showpasswd"
+              @click:append-inner="showpassword = !showpassword"
             ></v-text-field>
             <v-btn block class="mb-3" color="primary" size="large" type="submit" :disabled="!valid"
               >Registrar</v-btn
@@ -64,22 +64,26 @@
 </template>
 <script setup>
 import { useFormRules } from '@/composables/useFormRules'
-
+import useUsers from '@/composables/useUsers'
+import { useRouter } from 'vue-router'
+const { createUser, loading, error } = useUsers()
 const valid = ref(false)
 const rules = useFormRules()
-
+const router = useRouter()
 const formData = ref({
   name: '',
-  passwd: '',
+  password: '',
   email: '',
 })
 
-const showpasswd = ref(false)
-function handleSubmit() {
-  if (!valid.value) {
-    console.log('Form Incompleto')
-  } else {
-    console.log('Form enviado', formData.value)
+const showpassword = ref(false)
+async function handleSubmit() {
+  try {
+    await createUser(formData.value).then((e) => {
+      router.push({ name: 'login' })
+    })
+  } catch (e) {
+    console.log('erro', e)
   }
 }
 </script>
