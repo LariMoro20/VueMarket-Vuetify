@@ -22,7 +22,7 @@
   </v-layout>
 </template>
 <script setup>
-const drawer = ref(false)
+const drawer = ref(true)
 const itens = [
   {
     title: 'Dashboard',

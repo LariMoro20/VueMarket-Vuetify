@@ -11,7 +11,17 @@ export default function useUsers() {
     }
   }
 
+  const doLogin = async (payload) => {
+    try {
+      const { data, status } = await api.post('/login', payload)
+      localStorage.setItem('auth-token', data.token)
+      return successResponse(data, status)
+    } catch (err) {
+      return errorResponse(err, 'Erro ao logar')
+    }
+  }
+
   return {
-    createUser,
+    createUser, doLogin
   }
 }

@@ -10,7 +10,7 @@
       </v-col>
       <v-col class="d-flex align-center justify-center" md="6" sm="12">
         <div class="w-100" style="max-width: 400px">
-          <v-form class="d-flex flex-column ga-3" v-model="valid" @submit="handleSubmit">
+          <v-form class="d-flex flex-column ga-3" v-model="valid" @submit.prevent="handleSubmit">
             <div class="text-center mb-6">
               <h2 class="text-primary mb-1">Login</h2>
               <p class="text-grey-darken-1">Faça login para acessar a plataforma</p>
@@ -26,15 +26,15 @@
             <v-text-field
               :rules="[rules.required, rules.password]"
               label="Senha"
-              v-model="formData.passwd"
+              v-model="formData.password"
               required
               variant="outlined"
-              :append-inner-icon="showpasswd ? 'mdi-eye-off' : 'mdi-eye'"
-              :type="showpasswd ? 'text' : 'password'"
+              :append-inner-icon="showpassword ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="showpassword ? 'text' : 'password'"
               density="compact"
               placeholder="Enter your password"
               prepend-inner-icon="mdi-lock-outline"
-              @click:append-inner="showpasswd = !showpasswd"
+              @click:append-inner="showpassword = !showpassword"
             ></v-text-field>
             <v-btn block class="mb-3" color="primary" size="large" type="submit" :disabled="!valid"
               >Entrar</v-btn
@@ -51,19 +51,32 @@
 </template>
 <script setup>
 import { useFormRules } from '@/composables/useFormRules'
+import { useNotifications } from '@/composables/useNotifications'
+import { useRouter } from 'vue-router'
+import useUsers from '@/composables/useUsers'
+
+const { doLogin } = useUsers()
+const notification = useNotifications()
+const router = useRouter()
 
 const valid = ref(false)
 const rules = useFormRules()
-const showpasswd = ref(false)
+const showpassword = ref(false)
 const formData = ref({
-  passwd: '',
+  password: '',
   email: '',
 })
-function handleSubmit() {
-  if (!valid.value) {
-    console.log('Form Incompleto')
-  } else {
-    console.log('Form enviado')
+async function handleSubmit() {
+  try {
+    const { data, success, status, message } = await doLogin(formData.value)
+    if (success) {
+      notification.notifySuccess('Login realizado com sucesso!')
+      router.push({ name: 'dashboard' })
+    } else {
+      notification.notifyError('Houve algum problema ao logar: ' + message)
+    }
+  } catch (e) {
+    console.log('erro', e)
   }
 }
 </script>

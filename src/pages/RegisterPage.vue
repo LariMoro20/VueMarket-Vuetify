@@ -64,11 +64,11 @@
 </template>
 <script setup>
 import { useFormRules } from '@/composables/useFormRules'
-import useUsers from '@/composables/useUsers'
 import { useRouter } from 'vue-router'
 import { useNotifications } from '@/composables/useNotifications'
-const { createUser, loading, error } = useUsers()
+import useUsers from '@/composables/useUsers'
 
+const { createUser } = useUsers()
 const notification = useNotifications()
 const valid = ref(false)
 const rules = useFormRules()
