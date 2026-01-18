@@ -9,6 +9,15 @@ import Components from 'unplugin-vue-components/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://api.areteacademy.com.br/api',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
   plugins: [
     AutoImport({
       include: [
