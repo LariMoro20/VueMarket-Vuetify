@@ -34,7 +34,7 @@
               variant="outlined"
             ></v-text-field>
             <v-text-field
-              :rules="[rules.required, rules.passwd]"
+              :rules="[rules.required, rules.minLength(8)]"
               label="Senha"
               required
               variant="outlined"
@@ -54,19 +54,13 @@
   </v-container>
 </template>
 <script setup>
-const rules = {
-  required: (value) => !!value || 'Campo obrigatório!',
-  passwd: (value) => value.length >= 8 || 'Minimo 8 characters',
-  email: (value) => {
-    const pattern =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return pattern.test(value) || 'Informe um email válido.'
-  },
-}
+import { useFormRules } from '@/composables/useFormRules'
+
 const valid = ref(false)
+const rules = useFormRules()
 
 function handleSubmit() {
-  if (valid.value) {
+  if (!valid.value) {
     console.log('Form Incompleto')
   } else {
     console.log('Form enviado')
