@@ -24,21 +24,30 @@
             <v-text-field
               :rules="[rules.required]"
               label="Nome"
+              v-model="formData.name"
               required
               variant="outlined"
             ></v-text-field>
             <v-text-field
               :rules="[rules.required, rules.email]"
               label="Email"
+              v-model="formData.email"
               required
               variant="outlined"
             ></v-text-field>
+
             <v-text-field
               :rules="[rules.required, rules.minLength(8)]"
               label="Senha"
+              v-model="formData.passwd"
               required
               variant="outlined"
-              type="password"
+              :append-inner-icon="showpasswd ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="showpasswd ? 'text' : 'password'"
+              density="compact"
+              placeholder="Enter your password"
+              prepend-inner-icon="mdi-lock-outline"
+              @click:append-inner="showpasswd = !showpasswd"
             ></v-text-field>
             <v-btn block class="mb-3" color="primary" size="large" type="submit" :disabled="!valid"
               >Registrar</v-btn
@@ -59,11 +68,18 @@ import { useFormRules } from '@/composables/useFormRules'
 const valid = ref(false)
 const rules = useFormRules()
 
+const formData = ref({
+  name: '',
+  passwd: '',
+  email: '',
+})
+
+const showpasswd = ref(false)
 function handleSubmit() {
   if (!valid.value) {
     console.log('Form Incompleto')
   } else {
-    console.log('Form enviado')
+    console.log('Form enviado', formData.value)
   }
 }
 </script>
