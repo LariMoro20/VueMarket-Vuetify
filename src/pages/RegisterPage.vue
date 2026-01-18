@@ -66,7 +66,10 @@
 import { useFormRules } from '@/composables/useFormRules'
 import useUsers from '@/composables/useUsers'
 import { useRouter } from 'vue-router'
+import { useNotifications } from '@/composables/useNotifications'
 const { createUser, loading, error } = useUsers()
+
+const notification = useNotifications()
 const valid = ref(false)
 const rules = useFormRules()
 const router = useRouter()
@@ -79,9 +82,13 @@ const formData = ref({
 const showpassword = ref(false)
 async function handleSubmit() {
   try {
-    await createUser(formData.value).then((e) => {
+    const { data, success, status, message } = await createUser(formData.value)
+    if (success) {
+      notification.notifySuccess('Cadastro realizado com sucesso!')
       router.push({ name: 'login' })
-    })
+    } else {
+      notification.notifyError('Houve algum problema ao cadastrar: ' + message)
+    }
   } catch (e) {
     console.log('erro', e)
   }

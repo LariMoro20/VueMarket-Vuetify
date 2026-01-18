@@ -20,6 +20,7 @@ Plataforma de gerenciamento de estoque desenvolvida durante o **[VueExpert](http
 - 🎭 Ícones Material Design (@mdi/font)
 - 🔐 Sistema de autenticação com interceptors
 - 📝 Validações de formulário reutilizáveis
+- 🔔 Sistema de notificações (toast/snackbar) global
 - 🏗️ Arquitetura em camadas (UI → Composables → HTTP Client)
 - 🎯 Respostas HTTP padronizadas
 - 🖼️ Ilustrações personalizadas com [unDraw](https://undraw.co/)
@@ -102,7 +103,10 @@ O `eslint.config.js` está configurado para reconhecer imports automáticos e se
 ```
 src/
 ├── components/       # Componentes reutilizáveis
-├── composables/      # Lógica de negócio (useUsers, useFormRules)
+├── composables/      # Lógica de negócio
+│   ├── useUsers.js      # Operações de usuários
+│   ├── useFormRules.js  # Validações de formulário
+│   └── useNotifications.js  # Sistema de notificações
 ├── layouts/          # Layouts da aplicação
 ├── lib/              # Configurações externas (axios)
 ├── pages/            # Páginas/Views
@@ -166,6 +170,24 @@ const email = ref('')
   <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="Email" />
 </template>
 ```
+
+### 🔔 Sistema de Notificações
+
+O composable `useNotifications.js` gerencia notificações globais usando `v-snackbar` do Vuetify:
+
+```javascript
+// Uso no componente
+import { useNotifications } from '@/composables/useNotifications'
+
+const notification = useNotifications()
+
+// Exibir notificações
+notification.notifySuccess('Cadastro realizado!')
+notification.notifyError('Erro ao processar')
+notification.notifyAlert('Atenção: verifique os dados')
+```
+
+O `v-snackbar` deve estar configurado em `App.vue` para funcionar globalmente. Veja o arquivo para detalhes.
 
 Veja `src/pages/RegisterPage.vue` para um exemplo completo.
 
