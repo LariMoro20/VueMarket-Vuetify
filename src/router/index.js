@@ -5,6 +5,9 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      meta: {
+        requiresAuth: false
+      },
       component: () => import('@/layouts/LoginLayout.vue'),
       children: [{
         path: '',
@@ -20,6 +23,9 @@ const router = createRouter({
 
     {
       path: '/',
+      meta: {
+        requiresAuth: true
+      },
       component: () => import('@/layouts/MainLayout.vue'),
       children: [{
         path: '/dashboard',
@@ -39,5 +45,15 @@ const router = createRouter({
       ]
     }],
 })
-
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('auth-token')
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  if (requiresAuth && !token) {
+    next({ name: 'login' })
+  } else if (!requiresAuth && token && to.name === 'login') {
+    next({ name: 'dashboard' })
+  } else {
+    next()
+  }
+})
 export default router

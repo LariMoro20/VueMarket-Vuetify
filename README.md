@@ -21,6 +21,7 @@ Plataforma de gerenciamento de estoque desenvolvida durante o **[VueExpert](http
 - 🔐 Sistema de autenticação com interceptors
 - 📝 Validações de formulário reutilizáveis
 - 🔔 Sistema de notificações (toast/snackbar) global
+- 🛡️ Proteção de rotas com Navigation Guards
 - 🏗️ Arquitetura em camadas (UI → Composables → HTTP Client)
 - 🎯 Respostas HTTP padronizadas
 - 🖼️ Ilustrações personalizadas com [unDraw](https://undraw.co/)
@@ -188,6 +189,30 @@ notification.notifyAlert('Atenção: verifique os dados')
 ```
 
 O `v-snackbar` deve estar configurado em `App.vue` para funcionar globalmente. Veja o arquivo para detalhes.
+
+### 🛡️ Proteção de Rotas
+
+O arquivo `src/router/index.js` implementa **Navigation Guards** para proteger rotas que exigem autenticação:
+
+```javascript
+// Rotas públicas
+meta: {
+  requiresAuth: false
+} // Login, Register
+
+// Rotas protegidas
+meta: {
+  requiresAuth: true
+} // Dashboard, Products, Categories
+```
+
+**Comportamento:**
+
+- ✅ Usuário **sem token** tentando acessar rota protegida → redireciona para `/login`
+- ✅ Usuário **com token** tentando acessar `/login` → redireciona para `/dashboard`
+- ✅ Navegação permitida em outros casos
+
+O guard verifica o token em `localStorage` e usa `router.beforeEach()` para validação global.
 
 Veja `src/pages/RegisterPage.vue` para um exemplo completo.
 
