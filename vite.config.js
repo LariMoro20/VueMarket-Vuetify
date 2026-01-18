@@ -12,7 +12,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://api.areteacademy.com.br/api',
+        target: 'https://api.areteacademy.com.br',
         changeOrigin: true,
         secure: true,
       },
