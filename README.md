@@ -120,12 +120,14 @@ src/
 **1. Client HTTP (`src/lib/axios.js`)**
 
 - Configuração centralizada do Axios
-- Interceptors para autenticação
+- Interceptors para autenticação (request)
+- Interceptor de resposta para log de erros
 - Timeout e baseURL configuráveis
 
 **2. Composables (`src/composables/`)**
 
-- Encapsulam chamadas HTTP
+- Encapsulam chamadas HTTP (ex: `useUsers.js`)
+- Gerenciam autenticação (login, registro)
 - Tratamento de erros
 - Retorno padronizado via `httpResponse.js`
 
@@ -189,6 +191,40 @@ notification.notifyAlert('Atenção: verifique os dados')
 ```
 
 O `v-snackbar` deve estar configurado em `App.vue` para funcionar globalmente. Veja o arquivo para detalhes.
+
+### 🔌 Client HTTP e Autenticação
+
+**Configuração do Axios (`src/lib/axios.js`):**
+
+O cliente HTTP possui dois interceptors principais:
+
+**Request Interceptor:**
+
+- Adiciona automaticamente o token JWT em todas as requisições
+- Token armazenado em `localStorage` como `auth-token`
+- Header: `Authorization: Bearer {token}`
+
+**Response Interceptor:**
+
+- Log de erros no console para debugging
+- Captura erros globais da API
+
+**Autenticação (`src/composables/useUsers.js`):**
+
+```javascript
+import useUsers from '@/composables/useUsers'
+
+const { doLogin } = useUsers()
+
+// Fazer login
+const response = await doLogin({ email, password })
+if (response.success) {
+  // Token salvo automaticamente no localStorage
+  router.push({ name: 'dashboard' })
+}
+```
+
+O token é salvo automaticamente no `localStorage` e incluído em todas as requisições subsequentes via interceptor.
 
 ### 🛡️ Proteção de Rotas
 
