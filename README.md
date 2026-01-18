@@ -69,8 +69,10 @@ npm i axios@latest
 Crie um arquivo `.env` na raiz:
 
 ```env
-VITE_API_BASE_URL=http://localhost:3000/api
+VITE_BASE_URL=http://localhost:3000
 ```
+
+O Vite está configurado com **proxy** para redirecionar requisições `/api` para o backend. Isso evita problemas de CORS durante o desenvolvimento.
 
 ## 🏃 Como Executar
 
@@ -88,6 +90,7 @@ npm run format   # Formatar código
 
 O `vite.config.js` configura todos os plugins necessários. Veja o arquivo completo para detalhes sobre:
 
+- **Proxy de desenvolvimento**: Redireciona `/api` para `VITE_BASE_URL` (evita CORS)
 - Auto-import de composables Vue
 - Auto-import de componentes locais
 - Configuração de fontes Roboto
@@ -208,6 +211,11 @@ O cliente HTTP possui dois interceptors principais:
 
 - Log de erros no console para debugging
 - Captura erros globais da API
+
+**BaseURL:**
+
+- Usa `/api` como baseURL (proxy do Vite redireciona para o backend real)
+- Em produção, configure o proxy do servidor web ou ajuste a baseURL
 
 **Autenticação (`src/composables/useUsers.js`):**
 
