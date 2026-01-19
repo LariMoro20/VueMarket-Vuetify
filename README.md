@@ -22,6 +22,7 @@ Plataforma de gerenciamento de estoque desenvolvida durante o **[VueExpert](http
 - 📝 Validações de formulário reutilizáveis
 - 🔔 Sistema de notificações (toast/snackbar) global
 - 🛡️ Proteção de rotas com Navigation Guards
+- 📊 CRUD completo com modal reutilizável e v-data-table
 - 🏗️ Arquitetura em camadas (UI → Composables → HTTP Client)
 - 🎯 Respostas HTTP padronizadas
 - 🖼️ Ilustrações personalizadas com [unDraw](https://undraw.co/)
@@ -107,13 +108,22 @@ O `eslint.config.js` está configurado para reconhecer imports automáticos e se
 ```
 src/
 ├── components/       # Componentes reutilizáveis
+│   ├── Categories/
+│   │   └── CategoryFormModal.vue    # Modal de formulário
+│   ├── Shared/
+│   │   └── ConfirmDialog.vue        # Dialog de confirmação
+│   ├── Card.vue                     # Card wrapper
+│   ├── ContainerDefault.vue         # Container padrão
+│   └── MenuComponent.vue            # Menu de navegação
 ├── composables/      # Lógica de negócio
-│   ├── useUsers.js      # Operações de usuários
-│   ├── useFormRules.js  # Validações de formulário
-│   └── useNotifications.js  # Sistema de notificações
+│   ├── useUsers.js              # Operações de usuários
+│   ├── useCategories.js         # CRUD de categorias
+│   ├── useFormRules.js          # Validações de formulário
+│   └── useNotifications.js      # Sistema de notificações
 ├── layouts/          # Layouts da aplicação
 ├── lib/              # Configurações externas (axios)
 ├── pages/            # Páginas/Views
+│   └── CategoriesPage.vue       # Listagem e gestão
 ├── router/           # Rotas
 └── utils/            # Utilitários (httpResponse)
 ```
@@ -257,6 +267,61 @@ meta: {
 - ✅ Navegação permitida em outros casos
 
 O guard verifica o token em `localStorage` e usa `router.beforeEach()` para validação global.
+
+### 📊 CRUD de Categorias
+
+Implementação completa de Create, Read, Update e Delete usando componentes reutilizáveis:
+
+**Composable (`src/composables/useCategories.js`):**
+
+- `listCategories()` - Listar todas
+- `getCategoryById(id)` - Buscar por ID
+- `createCategory(payload)` - Criar nova
+- `updateCategory(id, payload)` - Atualizar existente
+- `deleteCategory(id)` - Deletar categoria
+
+**Componentes Reutilizáveis:**
+
+**1. CategoryFormModal** - Modal para criar/editar
+
+- Usa `defineModel` para two-way binding
+- Detecta automaticamente modo de edição (com ID) ou criação (sem ID)
+- Validação de formulário integrada
+- Estados de loading durante salvamento
+
+**2. ConfirmDialog** - Dialog de confirmação genérico
+
+- Reutilizável para qualquer ação de confirmação
+- Props customizáveis (título, mensagem, cor do botão)
+- Estado de loading integrado
+
+**3. CategoriesPage** - Página principal
+
+- `v-data-table` do Vuetify para listagem
+- Ações inline (editar/deletar)
+- Formatação de datas
+- Status com chips coloridos
+- Integração completa com notificações
+
+**Exemplo de uso:**
+
+```vue
+<script setup>
+import { useCategories } from '@/composables/useCategories'
+
+const { listCategories, createCategory } = useCategories()
+
+// Listar categorias
+const response = await listCategories()
+if (response.success) {
+  categories.value = response.data
+}
+
+// Criar nova categoria
+await createCategory({ name: 'Eletrônicos', status: 'active' })
+```
+
+Veja `src/pages/CategoriesPage.vue` para implementação completa do CRUD.
 
 Veja `src/pages/RegisterPage.vue` para um exemplo completo.
 
