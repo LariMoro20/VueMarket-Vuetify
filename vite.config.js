@@ -9,7 +9,6 @@ import Components from 'unplugin-vue-components/vite'
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-
   return {
     server: {
       proxy: {
@@ -29,16 +28,17 @@ export default defineConfig(({ mode }) => {
           /\.md$/ // .md
         ],
         imports: [
-          'vue'
-        ]
+          'vue',
+          'vue-router'
+        ],
+        dts: 'src/auto-imports.d.ts'
       }),
       Components({
         dirs: ['src/components'],
         extensions: ['vue'],
-        globs: ['src/components/*.vue'],
-        deep: false,
-        include: [/\.vue$/, /\.vue\?vue/, /\.vue\.[tj]sx?\?vue/],
-        exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.nuxt[\\/]/],
+        deep: true, // MUDANÇA AQUI: permite buscar em subpastas
+        dts: 'src/components.d.ts',
+        directoryAsNamespace: false,
       }),
       vue(),
       vueDevTools(),
