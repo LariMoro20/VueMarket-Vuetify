@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import useAuth from '@/composables/useAuth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,12 +46,13 @@ const router = createRouter({
       ]
     }],
 })
+const auth = useAuth()
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('auth-token')
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  if (requiresAuth && !token) {
+  const tokenExpired = auth.isTokenExpired()
+  if (requiresAuth && tokenExpired) {
     next({ name: 'login' })
-  } else if (!requiresAuth && token && to.name === 'login') {
+  } else if (!requiresAuth && !tokenExpired && to.name === 'login') {
     next({ name: 'dashboard' })
   } else {
     next()

@@ -31,7 +31,6 @@
               variant="outlined"
               :append-inner-icon="showpassword ? 'mdi-eye-off' : 'mdi-eye'"
               :type="showpassword ? 'text' : 'password'"
-              density="compact"
               placeholder="Enter your password"
               prepend-inner-icon="mdi-lock-outline"
               @click:append-inner="showpassword = !showpassword"
@@ -53,9 +52,9 @@
 import { useFormRules } from '@/composables/useFormRules'
 import { useNotifications } from '@/composables/useNotifications'
 import { useRouter } from 'vue-router'
-import useUsers from '@/composables/useUsers'
+import useAuth from '@/composables/useAuth'
 
-const { doLogin } = useUsers()
+const { doLogin } = useAuth()
 const notification = useNotifications()
 const router = useRouter()
 

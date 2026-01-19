@@ -66,9 +66,9 @@
 import { useFormRules } from '@/composables/useFormRules'
 import { useRouter } from 'vue-router'
 import { useNotifications } from '@/composables/useNotifications'
-import useUsers from '@/composables/useUsers'
+import useAuth from '@/composables/useAuth'
 
-const { createUser } = useUsers()
+const { createUser } = useAuth()
 const notification = useNotifications()
 const valid = ref(false)
 const rules = useFormRules()

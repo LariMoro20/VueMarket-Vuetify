@@ -63,6 +63,9 @@ npm i -D unplugin-vue-components
 
 # 6. Cliente HTTP
 npm i axios@latest
+
+# 7. Decodificação de JWTS
+npm i jwt-decode
 ```
 
 ### Variáveis de ambiente
@@ -116,7 +119,7 @@ src/
 │   ├── ContainerDefault.vue         # Container padrão
 │   └── MenuComponent.vue            # Menu de navegação
 ├── composables/      # Lógica de negócio
-│   ├── useUsers.js              # Operações de usuários
+│   ├── useAuth.js               # Autenticação e gestão de token
 │   ├── useCategories.js         # CRUD de categorias
 │   ├── useFormRules.js          # Validações de formulário
 │   └── useNotifications.js      # Sistema de notificações
@@ -227,20 +230,42 @@ O cliente HTTP possui dois interceptors principais:
 - Usa `/api` como baseURL (proxy do Vite redireciona para o backend real)
 - Em produção, configure o proxy do servidor web ou ajuste a baseURL
 
-**Autenticação (`src/composables/useUsers.js`):**
+**Gestão de Autenticação (`src/composables/useAuth.js`):**
+
+Composable centralizado para operações de autenticação:
 
 ```javascript
-import useUsers from '@/composables/useUsers'
+import useAuth from '@/composables/useAuth'
 
-const { doLogin } = useUsers()
+const { doLogin, doLogout, isTokenExpired, getUserID } = useAuth()
 
-// Fazer login
+// Login
 const response = await doLogin({ email, password })
 if (response.success) {
-  // Token salvo automaticamente no localStorage
   router.push({ name: 'dashboard' })
 }
+
+// Logout
+const response = doLogout()
+if (response.success) {
+  router.push({ name: 'login' })
+}
+
+// Verificar expiração do token
+if (isTokenExpired()) {
+  router.push({ name: 'login' })
+}
+
+// Obter ID do usuário do token
+const userId = getUserID()
 ```
+
+**Funcionalidades:**
+
+- `doLogin()` - Autentica e salva token automaticamente
+- `doLogout()` - Remove token do localStorage
+- `isTokenExpired()` - Valida expiração usando `jwt-decode`
+- `getUserID()` - Extrai user_id do token JWT
 
 O token é salvo automaticamente no `localStorage` e incluído em todas as requisições subsequentes via interceptor.
 
@@ -262,11 +287,21 @@ meta: {
 
 **Comportamento:**
 
-- ✅ Usuário **sem token** tentando acessar rota protegida → redireciona para `/login`
-- ✅ Usuário **com token** tentando acessar `/login` → redireciona para `/dashboard`
+- ✅ Usuário **sem token ou token expirado** tentando acessar rota protegida → redireciona para `/login`
+- ✅ Usuário **com token válido** tentando acessar `/login` → redireciona para `/dashboard`
 - ✅ Navegação permitida em outros casos
 
-O guard verifica o token em `localStorage` e usa `router.beforeEach()` para validação global.
+O guard verifica o token em `localStorage` usando `useAuth().isTokenExpired()` e aplica validação global com `router.beforeEach()`.
+
+**Implementação do Logout:**
+
+O logout é implementado no `MainLayout.vue` com confirmação antes de sair:
+
+- Botão no app-bar com ícone `mdi-logout`
+- Dialog de confirmação reutilizável (`ConfirmDialog`)
+- Remove token do localStorage
+- Redireciona para página de login
+- Notificação de sucesso/erro
 
 ### 📊 CRUD de Categorias
 
