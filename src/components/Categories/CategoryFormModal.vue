@@ -44,19 +44,16 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import useCategories from '@/composables/useCategories'
 import { useNotifications } from '@/composables/useNotifications'
-
-const { createCategory, updateCategory } = useCategories()
-const notification = useNotifications()
+import useCategories from '@/composables/useCategories'
 
 const emit = defineEmits(['saved'])
 
+const { createCategory, updateCategory } = useCategories()
+const notification = useNotifications()
 const dialogModel = defineModel({ type: Boolean, default: false })
 const categoryModel = defineModel('category', { type: Object, default: null })
 
-const formRef = ref(null)
 const formValid = ref(false)
 const saving = ref(false)
 
@@ -85,7 +82,6 @@ const handleClose = () => {
 
 const handleSave = async () => {
   if (!formValid.value) return
-
   saving.value = true
   try {
     let response
@@ -101,7 +97,6 @@ const handleSave = async () => {
         status: form.value.status,
       })
     }
-
     if (response.success) {
       notification.notifySuccess('Categoria salva com sucesso!')
       emit('saved')

@@ -1,91 +1,152 @@
 <template>
   <ContainerDefault>
-    <div class="d-flex justify-space-between">
+    <div class="d-flex justify-space-between mb-4">
       <h2>Produtos</h2>
-      <v-btn append-icon="$plus">Novo</v-btn>
+      <v-btn prepend-icon="mdi-plus" color="primary" @click="openDialog"> Novo </v-btn>
     </div>
-    <v-data-table :items="products"></v-data-table>
+
+    <v-data-table :items="products" :loading="loading" :headers="headers">
+      <template #item.price="{ item }">
+        {{ formatPrice(item.price) }}
+      </template>
+
+      <template #item.status="{ item }">
+        <v-chip size="small" :color="item.status === 'active' ? 'success' : 'error'">
+          {{ item.status === 'active' ? 'Ativo' : 'Inativo' }}
+        </v-chip>
+      </template>
+
+      <template #item.created_at="{ item }">
+        {{ formatDate(item.created_at) }}
+      </template>
+
+      <template #item.actions="{ item }">
+        <v-btn icon="mdi-pencil" size="small" variant="text" @click="editProduct(item)" />
+        <v-btn
+          icon="mdi-delete"
+          size="small"
+          variant="text"
+          color="error"
+          @click="confirmDelete(item)"
+        />
+      </template>
+    </v-data-table>
+
+    <ProductFormModal
+      v-model="dialog"
+      v-model:product="selectedProduct"
+      @saved="handleProductSaved"
+    />
+
+    <ConfirmDialog
+      v-model="deleteDialog"
+      title="Deletar Produto"
+      :message="`Tem certeza que deseja deletar o produto '${productToDelete?.name}'? Esta ação não pode ser desfeita.`"
+      confirm-text="Deletar"
+      confirm-color="error"
+      :loading="deleting"
+      @confirm="handleDelete"
+    />
   </ContainerDefault>
 </template>
+
 <script setup>
-const products = [
-  {
-    name: 'Ração Premium para Cães Adultos',
-    category: 'Ração',
-    pet: 'Cachorro',
-    brand: 'Golden',
-    price: 149.9,
-    weight: '15kg',
-    description: 'Ração premium com nutrientes essenciais para cães adultos.',
-    inStock: true,
-  },
-  {
-    name: 'Ração Premium para Gatos Castrados',
-    category: 'Ração',
-    pet: 'Gato',
-    brand: 'Whiskas',
-    price: 89.9,
-    weight: '3kg',
-    description: 'Alimento balanceado para gatos castrados.',
-    inStock: true,
-  },
-  {
-    name: 'Bifinho de Carne',
-    category: 'Petiscos',
-    pet: 'Cachorro',
-    brand: 'Pedigree',
-    price: 19.9,
-    weight: '65g',
-    description: 'Petisco macio ideal para recompensas.',
-    inStock: true,
-  },
-  {
-    name: 'Tapete Higiênico Super Absorvente',
-    category: 'Higiene e Limpeza',
-    pet: 'Cachorro',
-    brand: 'Chalesco',
-    price: 59.9,
-    quantity: '30 unidades',
-    description: 'Tapetes com alto poder de absorção.',
-    inStock: false,
-  },
-  {
-    name: 'Brinquedo Mordedor de Borracha',
-    category: 'Brinquedos',
-    pet: 'Cachorro',
-    brand: 'Pet Games',
-    price: 34.9,
-    description: 'Auxilia na limpeza dos dentes e alivia o estresse.',
-    inStock: true,
-  },
-  {
-    name: 'Coleira Ajustável com Guia',
-    category: 'Acessórios',
-    pet: 'Cachorro',
-    brand: 'Zee.Dog',
-    price: 129.9,
-    description: 'Coleira confortável e resistente.',
-    inStock: true,
-  },
-  {
-    name: 'Areia Higiênica para Gatos',
-    category: 'Higiene e Limpeza',
-    pet: 'Gato',
-    brand: 'Pipicat',
-    price: 39.9,
-    weight: '4kg',
-    description: 'Alta absorção e controle de odores.',
-    inStock: true,
-  },
-  {
-    name: 'Ração para Peixes Tropicais',
-    category: 'Aquarismo',
-    pet: 'Peixe',
-    brand: 'Alcon',
-    price: 14.9,
-    weight: '50g',
-    description: 'Alimento completo para peixes tropicais.',
-    inStock: true,
-  },
+import { useNotifications } from '@/composables/useNotifications'
+import useProducts from '@/composables/useProducts'
+
+const { listProducts, deleteProduct } = useProducts()
+const notification = useNotifications()
+
+const products = ref([])
+const loading = ref(false)
+const dialog = ref(false)
+const selectedProduct = ref(null)
+const deleteDialog = ref(false)
+const productToDelete = ref(null)
+const deleting = ref(false)
+
+const headers = [
+  { title: 'Nome', key: 'name', sortable: true },
+  { title: 'Preço', key: 'price', sortable: true },
+  { title: 'Status', key: 'status', sortable: true, align: 'center' },
+  { title: 'Criado em', key: 'created_at', sortable: true },
+  { title: 'Ações', key: 'actions', sortable: false, align: 'center' },
 ]
+
+const formatPrice = (price) => {
+  if (price === null || price === undefined) return 'R$ 0,00'
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(price)
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return '-'
+  const date = new Date(dateString)
+  return date.toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
+const fetchProducts = async () => {
+  loading.value = true
+  try {
+    const response = await listProducts()
+    if (response.success) {
+      products.value = response.data
+    } else {
+      notification.notifyError(response.error)
+    }
+  } catch (error) {
+    notification.notifyError(error)
+  } finally {
+    loading.value = false
+  }
+}
+onMounted(fetchProducts)
+
+const openDialog = () => {
+  selectedProduct.value = null
+  dialog.value = true
+}
+
+const editProduct = (product) => {
+  selectedProduct.value = product
+  dialog.value = true
+}
+
+const handleProductSaved = async () => {
+  await fetchProducts()
+}
+
+const confirmDelete = (product) => {
+  productToDelete.value = product
+  deleteDialog.value = true
+}
+
+const handleDelete = async () => {
+  if (!productToDelete.value) return
+  deleting.value = true
+  try {
+    const response = await deleteProduct(productToDelete.value.id)
+
+    if (response.success) {
+      notification.notifySuccess('Produto deletado com sucesso!')
+      deleteDialog.value = false
+      productToDelete.value = null
+      await fetchProducts()
+    } else {
+      notification.notifyError(response.error)
+    }
+  } catch (error) {
+    notification.notifyError(error)
+  } finally {
+    deleting.value = false
+  }
+}
 </script>

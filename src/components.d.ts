@@ -16,6 +16,7 @@ declare module 'vue' {
     ConfirmDialog: typeof import('./components/Shared/ConfirmDialog.vue')['default']
     ContainerDefault: typeof import('./components/ContainerDefault.vue')['default']
     MenuComponent: typeof import('./components/MenuComponent.vue')['default']
+    ProductFormModal: typeof import('./components/Products/ProductFormModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
