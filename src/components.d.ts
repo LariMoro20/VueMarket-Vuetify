@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Card: typeof import('./components/Card.vue')['default']
     CategoryFormModal: typeof import('./components/Categories/CategoryFormModal.vue')['default']
+    ChipStatus: typeof import('./components/Shared/ChipStatus.vue')['default']
     ConfirmDialog: typeof import('./components/Shared/ConfirmDialog.vue')['default']
     ContainerDefault: typeof import('./components/ContainerDefault.vue')['default']
     MenuComponent: typeof import('./components/MenuComponent.vue')['default']

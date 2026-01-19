@@ -6,9 +6,7 @@
     </div>
     <v-data-table :items="categories" :loading="loading" :headers="headers">
       <template v-slot:item.status="{ item }">
-        <v-chip :color="item.status === 'active' ? 'success' : 'error'" size="small">
-          {{ item.status }}
-        </v-chip>
+        <ChipStatus :status="item.status" />
       </template>
       <template v-slot:item.created_at="{ item }">
         {{ formatDate(item.created_at) }}

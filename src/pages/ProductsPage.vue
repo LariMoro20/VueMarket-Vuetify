@@ -11,9 +11,7 @@
       </template>
 
       <template #item.status="{ item }">
-        <v-chip size="small" :color="item.status === 'active' ? 'success' : 'error'">
-          {{ item.status === 'active' ? 'Ativo' : 'Inativo' }}
-        </v-chip>
+        <ChipStatus :status="item.status" />
       </template>
 
       <template #item.created_at="{ item }">
