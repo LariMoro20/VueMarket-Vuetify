@@ -10,15 +10,15 @@ import Components from 'unplugin-vue-components/vite'
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    server: {
-      proxy: {
-        '/api': {
-          target: env.VITE_BASE_URL,
-          changeOrigin: true,
-          secure: false,
-        },
-      },
-    },
+    /* server: {
+       proxy: {
+         '/api': {
+           target: env.VITE_BASE_URL,
+           changeOrigin: true,
+           secure: false,
+         },
+       },
+     },*/
     plugins: [
       AutoImport({
         include: [
