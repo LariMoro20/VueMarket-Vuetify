@@ -46,7 +46,6 @@
 <script setup>
 import { useNotifications } from '@/composables/useNotifications'
 import useCategories from '@/composables/useCategories'
-
 const emit = defineEmits(['saved'])
 
 const { createCategory, updateCategory } = useCategories()
@@ -57,12 +56,9 @@ const categoryModel = defineModel('category', { type: Object, default: null })
 const formValid = ref(false)
 const saving = ref(false)
 
-const form = computed({
-  get: () => categoryModel.value || { id: null, name: '', status: 'active' },
-  set: (value) => {
-    categoryModel.value = value
-  },
-})
+const form = ref(
+  categoryModel.value ? { ...categoryModel.value } : { id: null, name: '', status: 'active' },
+)
 
 const statusOptions = [
   { text: 'Ativo', value: 'active' },
@@ -110,4 +106,12 @@ const handleSave = async () => {
     saving.value = false
   }
 }
+
+watch(dialogModel, (value) => {
+  if (value) {
+    form.value = categoryModel.value
+      ? { ...categoryModel.value }
+      : { id: null, name: '', status: 'active' }
+  }
+})
 </script>

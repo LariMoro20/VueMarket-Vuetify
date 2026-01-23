@@ -86,7 +86,6 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
 import { useNotifications } from '@/composables/useNotifications'
 import useProducts from '@/composables/useProducts'
 import useCategories from '@/composables/useCategories'
@@ -104,17 +103,14 @@ const formValid = ref(false)
 const saving = ref(false)
 const categories = ref([])
 
-const form = computed(
-  () =>
-    productModel.value || {
-      id: null,
-      name: '',
-      description: '',
-      price: null,
-      status: 'active',
-      category_id: null,
-    },
-)
+const form = ref({
+  id: null,
+  name: '',
+  description: '',
+  price: null,
+  status: 'active',
+  category_id: null,
+})
 
 const isEditing = computed(() => !!productModel.value?.id)
 
@@ -169,6 +165,22 @@ const fetchCategories = async () => {
     categories.value = response.data
   }
 }
+
+watch(dialogModel, (value) => {
+  if (value) {
+    form.value = productModel.value
+      ? { ...productModel.value }
+      : {
+          id: null,
+          name: '',
+          description: '',
+          price: null,
+          status: 'active',
+          category_id: null,
+        }
+    fetchCategories()
+  }
+})
 
 onMounted(fetchCategories)
 </script>
