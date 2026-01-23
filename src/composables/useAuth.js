@@ -9,11 +9,13 @@ export default function useAuth() {
     return decode?.user_id || null
   }
 
-  const getUser = () => {
-    const token = localStorage.getItem('auth-token')
-    if (!token) return null
-    const decode = jwtDecode(token)
-    return decode?.user_id || null
+  const getUser = async () => {
+    try {
+      const { data, status } = await api.get('/user')
+      return successResponse(data, status)
+    } catch (err) {
+      return errorResponse(err, 'Erro ao obter categorias')
+    }
   }
 
 
