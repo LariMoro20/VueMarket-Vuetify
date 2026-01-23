@@ -19,7 +19,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-main style="height: 100dvh">
+    <v-main style="min-height: 100dvh">
       <router-view />
     </v-main>
 
