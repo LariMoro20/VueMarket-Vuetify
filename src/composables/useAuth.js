@@ -9,6 +9,15 @@ export default function useAuth() {
     return decode?.user_id || null
   }
 
+  const getUser = () => {
+    const token = localStorage.getItem('auth-token')
+    if (!token) return null
+    const decode = jwtDecode(token)
+    return decode?.user_id || null
+  }
+
+
+
   const isTokenExpired = () => {
     const token = localStorage.getItem('auth-token')
     if (!token) return true
@@ -59,5 +68,6 @@ export default function useAuth() {
     doLogout,
     isTokenExpired,
     getUserID,
+    getUser
   }
 }

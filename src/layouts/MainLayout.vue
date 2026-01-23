@@ -2,11 +2,8 @@
   <v-layout>
     <v-app-bar color="primary" flat>
       <v-app-bar-nav-icon v-if="!mdAndUp" @click="drawer = !drawer" />
-
       <v-toolbar-title class="font-weight-bold"> Projeto Vuetify </v-toolbar-title>
-
       <v-spacer />
-
       <v-btn icon="mdi-logout" @click="confirmLogout" />
     </v-app-bar>
 
@@ -17,6 +14,16 @@
       elevation="4"
       width="260"
     >
+      <v-sheet class="pa-4 d-flex align-center" color="primary" dark>
+        <v-avatar size="48" class="me-3">
+          <v-img :src="user.avatar || defaultAvatar" />
+        </v-avatar>
+        <div>
+          <div class="font-weight-bold">{{ user.name || 'Usuário' }}</div>
+          <div class="text-subtitle-2">{{ user.email || 'usuario@email.com' }}</div>
+        </div>
+      </v-sheet>
+
       <v-list nav density="comfortable">
         <v-list-item
           v-for="menu in itens"
@@ -29,6 +36,7 @@
         />
       </v-list>
     </v-navigation-drawer>
+
     <v-main style="min-height: 100dvh">
       <router-view />
     </v-main>
@@ -46,16 +54,15 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import { useNotifications } from '@/composables/useNotifications'
 import useAuth from '@/composables/useAuth'
 
 const router = useRouter()
-const { doLogout } = useAuth()
+const { doLogout, getUser } = useAuth()
 const notification = useNotifications()
-
 const { mdAndUp } = useDisplay()
 
 const drawer = ref(mdAndUp.value)
@@ -66,22 +73,18 @@ watch(mdAndUp, (isDesktop) => {
   drawer.value = isDesktop
 })
 
+const defaultAvatar = '/images/default-avatar.png'
+const rawUser = getUser() || {}
+const user = computed(() => ({
+  name: rawUser.name,
+  email: rawUser.email,
+  avatar: rawUser.avatar,
+}))
+
 const itens = [
-  {
-    title: 'Dashboard',
-    value: 'dashboard',
-    icon: 'mdi-view-dashboard',
-  },
-  {
-    title: 'Categorias',
-    value: 'categories',
-    icon: 'mdi-format-list-bulleted',
-  },
-  {
-    title: 'Produtos',
-    value: 'products',
-    icon: 'mdi-package-variant',
-  },
+  { title: 'Dashboard', value: 'dashboard', icon: 'mdi-view-dashboard' },
+  { title: 'Categorias', value: 'categories', icon: 'mdi-format-list-bulleted' },
+  { title: 'Produtos', value: 'products', icon: 'mdi-package-variant' },
 ]
 
 const confirmLogout = () => {
@@ -92,7 +95,6 @@ const handleLogout = async () => {
   loggingOut.value = true
   try {
     const response = await doLogout()
-
     if (response.success) {
       notification.notifySuccess('Logout realizado com sucesso!')
       logoutDialog.value = false
