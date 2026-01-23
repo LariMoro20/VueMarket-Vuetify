@@ -43,7 +43,9 @@
           <v-card elevation="2">
             <v-card-title class="d-flex justify-space-between align-center">
               <span class="text-h6">Produtos Recentes</span>
-              <v-btn color="primary" variant="text" size="small"> Ver todos </v-btn>
+              <v-btn color="primary" variant="text" size="small" :to="{ name: 'products' }">
+                Ver todos
+              </v-btn>
             </v-card-title>
             <v-divider />
             <v-card-text>
