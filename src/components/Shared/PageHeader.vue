@@ -1,18 +1,22 @@
 <template>
-  <div class="mb-4">
-    <div class="d-flex justify-space-between align-start">
+  <div class="page-header">
+    <div class="d-flex justify-space-between align-center flex-wrap gap-2">
       <div>
-        <h1 class="text-h4 font-weight-bold mb-1">
+        <h1 class="text-h4 font-weight-bold">
           {{ title }}
         </h1>
 
-        <p v-if="subtitle" class="text-subtitle-1 text-medium-emphasis">
+        <p v-if="subtitle" class="text-subtitle-2 text-medium-emphasis mt-1">
           {{ subtitle }}
         </p>
       </div>
 
-      <slot></slot>
+      <div class="page-header__actions">
+        <slot />
+      </div>
     </div>
+
+    <v-divider class="mt-4" />
   </div>
 </template>
 
@@ -28,3 +32,15 @@ defineProps({
   },
 })
 </script>
+
+<style scoped>
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+</style>

@@ -1,9 +1,14 @@
 <template>
   <v-col cols="12" lg="4">
-    <v-card elevation="2">
-      <v-card-title class="text-h6"> Ações Rápidas </v-card-title>
+    <v-card elevation="2" class="quick-actions">
+      <v-card-title class="d-flex align-center gap-2">
+        <v-icon color="primary">mdi-lightning-bolt</v-icon>
+        <span class="text-h6 font-weight-medium"> Ações Rápidas </span>
+      </v-card-title>
+
       <v-divider />
-      <v-card-text>
+
+      <v-card-text class="pt-4">
         <v-btn
           block
           color="primary"
@@ -14,9 +19,11 @@
         >
           Novo Produto
         </v-btn>
+
         <v-btn
           block
           color="success"
+          variant="tonal"
           size="large"
           class="mb-3"
           prepend-icon="mdi-folder-plus"
@@ -24,20 +31,22 @@
         >
           Nova Categoria
         </v-btn>
+
         <v-btn block variant="outlined" size="large" prepend-icon="mdi-magnify">
           Buscar Produto
         </v-btn>
       </v-card-text>
     </v-card>
   </v-col>
-  <ProductFormModal v-model="dialogProduct" @saved="emitChange" v-model:product="selectedProduct" />
+
+  <ProductFormModal v-model="dialogProduct" v-model:product="selectedProduct" @saved="emitChange" />
+
   <CategoryFormModal
     v-model="dialogCategory"
-    @saved="emitChange"
     v-model:category="selectedCategory"
+    @saved="emitChange"
   />
 </template>
-
 <script setup>
 const emit = defineEmits(['hasChange'])
 
