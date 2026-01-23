@@ -1,22 +1,32 @@
 <template>
   <v-layout>
-    <v-app-bar color="primary">
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title> Projeto Vuetify </v-toolbar-title>
-      <template v-slot:append>
-        <v-btn icon="mdi-logout" @click="confirmLogout"></v-btn>
-      </template>
+    <v-app-bar color="primary" flat>
+      <v-app-bar-nav-icon v-if="!mdAndUp" @click="drawer = !drawer" />
+
+      <v-toolbar-title class="font-weight-bold"> Projeto Vuetify </v-toolbar-title>
+
+      <v-spacer />
+
+      <v-btn icon="mdi-logout" @click="confirmLogout" />
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer">
-      <v-list>
+
+    <v-navigation-drawer
+      v-model="drawer"
+      :permanent="mdAndUp"
+      :temporary="!mdAndUp"
+      elevation="4"
+      width="260"
+    >
+      <v-list nav density="comfortable">
         <v-list-item
           v-for="menu in itens"
           :key="menu.value"
-          :value="menu.value"
+          :to="{ name: menu.value }"
+          :prepend-icon="menu.icon"
           :title="menu.title"
-          :to="menu.value"
-        >
-        </v-list-item>
+          active-color="primary"
+          rounded="lg"
+        />
       </v-list>
     </v-navigation-drawer>
     <v-main style="min-height: 100dvh">
@@ -36,8 +46,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 import { useNotifications } from '@/composables/useNotifications'
 import useAuth from '@/composables/useAuth'
 
@@ -45,22 +56,31 @@ const router = useRouter()
 const { doLogout } = useAuth()
 const notification = useNotifications()
 
-const drawer = ref(true)
+const { mdAndUp } = useDisplay()
+
+const drawer = ref(mdAndUp.value)
 const logoutDialog = ref(false)
 const loggingOut = ref(false)
+
+watch(mdAndUp, (isDesktop) => {
+  drawer.value = isDesktop
+})
 
 const itens = [
   {
     title: 'Dashboard',
     value: 'dashboard',
+    icon: 'mdi-view-dashboard',
   },
   {
     title: 'Categorias',
     value: 'categories',
+    icon: 'mdi-format-list-bulleted',
   },
   {
     title: 'Produtos',
     value: 'products',
+    icon: 'mdi-package-variant',
   },
 ]
 
@@ -68,10 +88,11 @@ const confirmLogout = () => {
   logoutDialog.value = true
 }
 
-const handleLogout = () => {
+const handleLogout = async () => {
   loggingOut.value = true
   try {
-    const response = doLogout()
+    const response = await doLogout()
+
     if (response.success) {
       notification.notifySuccess('Logout realizado com sucesso!')
       logoutDialog.value = false
@@ -79,7 +100,7 @@ const handleLogout = () => {
     } else {
       notification.notifyError(response.message || 'Erro ao fazer logout')
     }
-  } catch (error) {
+  } catch {
     notification.notifyError('Erro inesperado ao fazer logout')
   } finally {
     loggingOut.value = false
