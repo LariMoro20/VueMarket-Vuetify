@@ -52,6 +52,6 @@ export default function useProducts() {
     getProductById,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
   }
 }

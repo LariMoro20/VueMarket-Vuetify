@@ -2,7 +2,6 @@ import { api } from '@/lib/axios'
 import { successResponse, errorResponse } from '@/utils/httpResponse'
 import { jwtDecode } from 'jwt-decode'
 export default function useAuth() {
-
   const getUserID = () => {
     const token = localStorage.getItem('auth-token')
     if (!token) return null
@@ -55,6 +54,10 @@ export default function useAuth() {
   }
 
   return {
-    createUser, doLogin, doLogout, isTokenExpired, getUserID
+    createUser,
+    doLogin,
+    doLogout,
+    isTokenExpired,
+    getUserID,
   }
 }
