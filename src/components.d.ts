@@ -17,8 +17,12 @@ declare module 'vue' {
     ConfirmDialog: typeof import('./components/Shared/ConfirmDialog.vue')['default']
     ContainerDefault: typeof import('./components/ContainerDefault.vue')['default']
     MenuComponent: typeof import('./components/MenuComponent.vue')['default']
+    MetricCard: typeof import('./components/Dashboard/MetricCard.vue')['default']
     ProductFormModal: typeof import('./components/Products/ProductFormModal.vue')['default']
+    ProductTable: typeof import('./components/Products/ProductTable.vue')['default']
+    QuickActionsCard: typeof import('./components/Dashboard/QuickActionsCard.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TotalCard: typeof import('./components/Dashboard/MetricCard.vue')['default']
   }
 }

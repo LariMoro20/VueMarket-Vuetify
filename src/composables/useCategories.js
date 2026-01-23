@@ -52,7 +52,6 @@ export default function useCategories() {
     getCategoryById,
     createCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
   }
-
 }
