@@ -1,6 +1,6 @@
 <template>
   <ContainerDefault>
-    <PageHeader title="Produtos">
+    <PageHeader title="Produtos" subtitle="Gerencie todos os produtos do estoque">
       <v-btn prepend-icon="mdi-plus" color="primary" @click="create"> Novo </v-btn>
     </PageHeader>
     <ProductTable @updated="reload" :key="tableKey" />

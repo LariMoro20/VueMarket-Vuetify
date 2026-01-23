@@ -1,6 +1,6 @@
 <template>
   <ContainerDefault>
-    <PageHeader title="Categorias">
+    <PageHeader title="Categorias" subtitle="Gerencie as categorias de produtos">
       <v-btn prepend-icon="mdi-plus" color="primary" @click="create"> Nova </v-btn>
     </PageHeader>
     <CategoriesTable @updated="reload" :key="tableKey" />
