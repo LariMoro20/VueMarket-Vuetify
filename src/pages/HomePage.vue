@@ -7,7 +7,25 @@
       </v-col>
     </v-row>
 
-    <v-skeleton-loader v-if="loading" type="card, card, card, table" />
+    <div v-if="loading">
+      <v-row class="mb-4">
+        <v-col v-for="i in 4" :key="i" cols="12" sm="6" md="3">
+          <v-skeleton-loader type="card" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" lg="8">
+          <v-skeleton-loader type="card" class="mb-4" />
+
+          <v-skeleton-loader type="table" />
+        </v-col>
+
+        <v-col cols="12" lg="4">
+          <v-skeleton-loader type="card" />
+        </v-col>
+      </v-row>
+    </div>
 
     <v-alert v-else-if="error" type="error" variant="tonal" class="mb-4">
       {{ error }}
