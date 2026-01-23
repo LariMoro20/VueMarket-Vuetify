@@ -1,11 +1,6 @@
 <template>
   <ContainerDefault>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="text-h4 font-weight-bold mb-2">Dashboard</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">Visão geral do seu estoque</p>
-      </v-col>
-    </v-row>
+    <PageHeader title="Dashboard" subtitle="Visão geral do seu estoque" />
 
     <div v-if="loading">
       <v-row class="mb-4">
@@ -48,33 +43,38 @@
           <v-card elevation="2">
             <v-card-title class="d-flex justify-space-between align-center">
               <span class="text-h6">Produtos Recentes</span>
-              <v-btn color="primary" variant="text" size="small"> Ver todos </v-btn>
+              <v-btn color="primary" variant="text" size="small" :to="{ name: 'products' }">
+                Ver todos
+              </v-btn>
             </v-card-title>
             <v-divider />
             <v-card-text>
-              <v-table>
+              <v-table density="comfortable" hover>
                 <thead>
                   <tr>
-                    <th>Produto</th>
-                    <th>Categoria</th>
-                    <th>Data</th>
-                    <th>Status</th>
+                    <th class="text-left text-medium-emphasis">Produto</th>
+                    <th class="text-left text-medium-emphasis">Categoria</th>
+                    <th class="text-left text-medium-emphasis">Atualizado em</th>
+                    <th class="text-left text-medium-emphasis">Status</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  <tr v-for="product in recentProducts" :key="product.id">
+                  <tr v-for="product in recentProducts" :key="product.id" class="table-row">
                     <td class="font-weight-medium">
                       {{ product.name }}
                     </td>
+
                     <td>
-                      <v-chip size="small" variant="flat" color="primary">
+                      <v-chip size="small" variant="tonal" color="primary">
                         {{ product.categoryName }}
                       </v-chip>
                     </td>
+
                     <td class="text-medium-emphasis">
                       {{ product.formattedDate }}
                     </td>
+
                     <td>
                       <ChipStatus :status="product.status" />
                     </td>
@@ -85,21 +85,28 @@
           </v-card>
 
           <v-card elevation="2" class="mt-4">
-            <v-card-title class="text-h6"> Distribuição por Categoria </v-card-title>
+            <v-card-title class="d-flex align-center justify-space-between">
+              <span class="text-h6 font-weight-medium"> Distribuição por Categoria </span>
+            </v-card-title>
+
             <v-divider />
-            <v-card-text>
-              <div v-for="cat in categoryDistribution" :key="cat.name" class="mb-4">
-                <div class="d-flex justify-space-between align-center mb-2">
+
+            <v-card-text class="pt-4">
+              <div v-for="cat in categoryDistribution" :key="cat.name" class="mb-5">
+                <div class="d-flex justify-space-between align-center mb-1">
                   <span class="font-weight-medium">
                     {{ cat.name }}
                   </span>
-                  <span class="text-medium-emphasis"> {{ cat.count }} produtos </span>
+
+                  <span class="text-caption text-medium-emphasis"> {{ cat.count }} produtos </span>
                 </div>
+
                 <v-progress-linear
                   :model-value="(cat.count / metrics.totalProducts) * 100"
                   :color="cat.color"
-                  height="8"
+                  height="6"
                   rounded
+                  bg-color="grey-lighten-3"
                 />
               </div>
             </v-card-text>

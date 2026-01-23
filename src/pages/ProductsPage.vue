@@ -1,9 +1,8 @@
 <template>
   <ContainerDefault>
-    <div class="d-flex justify-space-between mb-4">
-      <h2>Produtos</h2>
+    <PageHeader title="Produtos" subtitle="Gerencie todos os produtos do estoque">
       <v-btn prepend-icon="mdi-plus" color="primary" @click="create"> Novo </v-btn>
-    </div>
+    </PageHeader>
     <ProductTable @updated="reload" :key="tableKey" />
     <ProductFormModal v-model="createDialog" v-model:product="newProduct" @saved="reload" />
   </ContainerDefault>

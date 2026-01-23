@@ -1,24 +1,51 @@
 <template>
   <v-layout>
-    <v-app-bar color="primary">
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title> Projeto Vuetify </v-toolbar-title>
-      <template v-slot:append>
-        <v-btn icon="mdi-logout" @click="confirmLogout"></v-btn>
-      </template>
+    <v-app-bar color="primary" flat>
+      <v-app-bar-nav-icon v-if="!mdAndUp" @click="drawer = !drawer" />
+      <v-toolbar-title class="font-weight-bold"> Projeto Vuetify </v-toolbar-title>
+      <v-spacer />
+      <v-btn icon="mdi-logout" @click="confirmLogout" />
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer">
-      <v-list>
+
+    <v-navigation-drawer
+      v-model="drawer"
+      :permanent="mdAndUp"
+      :temporary="!mdAndUp"
+      elevation="4"
+      width="260"
+    >
+      <v-sheet class="pa-4 d-flex align-center" color="primary" dark>
+        <v-avatar size="48" class="me-3">
+          <div v-if="!user.name" class="skeleton-avatar"></div>
+          <v-img v-else :src="user.avatar || defaultAvatar" />
+        </v-avatar>
+
+        <div class="flex flex-column">
+          <div class="font-weight-bold mb-1">
+            <div v-if="!user.name" class="skeleton-text" style="width: 120px; height: 16px"></div>
+            <span v-else>{{ user.name }}</span>
+          </div>
+
+          <div class="text-subtitle-2">
+            <div v-if="!user.email" class="skeleton-text" style="width: 160px; height: 14px"></div>
+            <span v-else>{{ user.email }}</span>
+          </div>
+        </div>
+      </v-sheet>
+
+      <v-list nav density="comfortable">
         <v-list-item
           v-for="menu in itens"
           :key="menu.value"
-          :value="menu.value"
+          :to="{ name: menu.value }"
+          :prepend-icon="menu.icon"
           :title="menu.title"
-          :to="menu.value"
-        >
-        </v-list-item>
+          color="primary"
+          rounded="lg"
+        />
       </v-list>
     </v-navigation-drawer>
+
     <v-main style="min-height: 100dvh">
       <router-view />
     </v-main>
@@ -36,42 +63,52 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 import { useNotifications } from '@/composables/useNotifications'
 import useAuth from '@/composables/useAuth'
 
 const router = useRouter()
-const { doLogout } = useAuth()
+const { doLogout, getUser } = useAuth()
 const notification = useNotifications()
+const { mdAndUp } = useDisplay()
 
-const drawer = ref(true)
+const drawer = ref(mdAndUp.value)
 const logoutDialog = ref(false)
 const loggingOut = ref(false)
 
+watch(mdAndUp, (isDesktop) => {
+  drawer.value = isDesktop
+})
+
+const defaultAvatar = '/images/default-avatar.png'
+const user = ref({ name: '', email: '' })
+
+const getUserData = async () => {
+  try {
+    const response = await getUser()
+    if (response.success) {
+      user.value = response.data
+    }
+  } catch {
+    notification.notifyError('Erro ao carregar dados do usuário')
+  }
+}
+
 const itens = [
-  {
-    title: 'Dashboard',
-    value: 'dashboard',
-  },
-  {
-    title: 'Categorias',
-    value: 'categories',
-  },
-  {
-    title: 'Produtos',
-    value: 'products',
-  },
+  { title: 'Dashboard', value: 'dashboard', icon: 'mdi-view-dashboard' },
+  { title: 'Categorias', value: 'categories', icon: 'mdi-format-list-bulleted' },
+  { title: 'Produtos', value: 'products', icon: 'mdi-package-variant' },
 ]
 
 const confirmLogout = () => {
   logoutDialog.value = true
 }
 
-const handleLogout = () => {
+const handleLogout = async () => {
   loggingOut.value = true
   try {
-    const response = doLogout()
+    const response = await doLogout()
     if (response.success) {
       notification.notifySuccess('Logout realizado com sucesso!')
       logoutDialog.value = false
@@ -79,10 +116,46 @@ const handleLogout = () => {
     } else {
       notification.notifyError(response.message || 'Erro ao fazer logout')
     }
-  } catch (error) {
+  } catch {
     notification.notifyError('Erro inesperado ao fazer logout')
   } finally {
     loggingOut.value = false
   }
 }
+
+onMounted(getUserData)
 </script>
+<style scoped>
+.skeleton-avatar,
+.skeleton-text {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+/* Animação de loading */
+.skeleton-avatar::after,
+.skeleton-text::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  to {
+    left: 100%;
+  }
+}
+</style>

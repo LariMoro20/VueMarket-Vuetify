@@ -1,19 +1,19 @@
 <template>
-  <v-card elevation="2" hover>
-    <v-card-text>
+  <v-card elevation="1" class="metric-card" rounded="xl">
+    <v-card-text class="pa-5">
       <div class="d-flex justify-space-between align-center">
         <div>
-          <p class="text-subtitle-2 text-medium-emphasis mb-1">
+          <div class="text-subtitle-2 text-medium-emphasis mb-1">
             {{ title }}
-          </p>
+          </div>
 
-          <h2 class="text-h4 font-weight-bold">
+          <div class="text-h4 font-weight-bold metric-value">
             {{ value }}
-          </h2>
+          </div>
         </div>
 
-        <v-avatar :color="color" size="56">
-          <v-icon size="32" color="white">
+        <v-avatar :color="color" variant="tonal" size="56">
+          <v-icon size="28">
             {{ icon }}
           </v-icon>
         </v-avatar>
@@ -24,21 +24,24 @@
 
 <script setup>
 defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
-  value: {
-    type: [String, Number],
-    required: true,
-  },
-  icon: {
-    type: String,
-    required: true,
-  },
+  title: String,
+  value: [String, Number],
+  icon: String,
   color: {
     type: String,
     default: 'primary',
   },
 })
 </script>
+
+<style scoped>
+.metric-card {
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.06);
+  transition: all 0.25s ease;
+}
+
+.metric-value {
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+</style>
