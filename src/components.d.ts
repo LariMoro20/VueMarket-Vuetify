@@ -19,6 +19,7 @@ declare module 'vue' {
     ContainerDefault: typeof import('./components/ContainerDefault.vue')['default']
     MenuComponent: typeof import('./components/MenuComponent.vue')['default']
     MetricCard: typeof import('./components/Dashboard/MetricCard.vue')['default']
+    PageHeader: typeof import('./components/Shared/PageHeader.vue')['default']
     ProductFormModal: typeof import('./components/Products/ProductFormModal.vue')['default']
     ProductTable: typeof import('./components/Products/ProductTable.vue')['default']
     QuickActionsCard: typeof import('./components/Dashboard/QuickActionsCard.vue')['default']

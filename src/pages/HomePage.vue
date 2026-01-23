@@ -1,11 +1,6 @@
 <template>
   <ContainerDefault>
-    <v-row>
-      <v-col cols="12">
-        <h1 class="text-h4 font-weight-bold mb-2">Dashboard</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">Visão geral do seu estoque</p>
-      </v-col>
-    </v-row>
+    <PageHeader title="Dashboard" subtitle="Visão geral do seu estoque" />
 
     <div v-if="loading">
       <v-row class="mb-4">

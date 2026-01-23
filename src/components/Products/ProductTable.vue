@@ -29,7 +29,9 @@
     <template #item.created_at="{ item }">
       {{ formatDate(item.created_at) }}
     </template>
-
+    <template #item.updated_at="{ item }">
+      {{ formatDate(item.updated_at) }}
+    </template>
     <template #item.actions="{ item }">
       <v-btn icon="mdi-pencil" size="small" variant="text" @click="edit(item)" />
       <v-btn
@@ -79,6 +81,7 @@ const headers = [
   { title: 'Preço', key: 'price' },
   { title: 'Status', key: 'status', align: 'center' },
   { title: 'Criado em', key: 'created_at' },
+  { title: 'Atualizado em', key: 'updated_at' },
   { title: 'Ações', key: 'actions', sortable: false, align: 'center' },
 ]
 
