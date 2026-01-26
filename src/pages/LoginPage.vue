@@ -1,14 +1,14 @@
 <template>
   <v-container class="pa-sm-4 pa-md-0 h-100" fluid>
     <v-row no-gutters class="h-100">
-      <v-col class="d-flex align-center justify-center bg-grey-lighten-4" md="6" sm="12">
+      <v-col class="d-flex align-center justify-center bg-grey-lighten-4" cols="12" md="6">
         <div class="text-center">
           <v-img class="mx-auto mb-4" max-width="300" src="/undraw/loginimage.svg"></v-img>
           <h1 class="text-primary mb-1">Vue Market</h1>
           <p class="text-grey-darken-1">Sua plataforma de gerenciamento de estoque</p>
         </div>
       </v-col>
-      <v-col class="d-flex align-center justify-center" md="6" sm="12">
+      <v-col class="d-flex align-center justify-center" cols="12" md="6">
         <div class="w-100" style="max-width: 400px">
           <v-form class="d-flex flex-column ga-3" v-model="valid" @submit.prevent="handleSubmit">
             <div class="text-center mb-6">
