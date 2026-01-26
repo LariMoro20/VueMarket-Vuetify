@@ -44,7 +44,6 @@
               variant="outlined"
               :append-inner-icon="showpassword ? 'mdi-eye-off' : 'mdi-eye'"
               :type="showpassword ? 'text' : 'password'"
-              density="compact"
               placeholder="Enter your password"
               prepend-inner-icon="mdi-lock-outline"
               @click:append-inner="showpassword = !showpassword"
