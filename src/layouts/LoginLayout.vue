@@ -1,23 +1,49 @@
 <template>
-  <v-layout>
-    <v-main style="min-height: 100dvh">
+  <v-layout class="auth-layout">
+    <v-app-bar elevation="0" class="auth-navbar">
+      <v-toolbar-title class="text-h6 font-weight-bold"> Vue Market </v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn icon @click="toggleTheme" size="small">
+        <v-icon>{{ isDark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-main>
       <router-view />
     </v-main>
   </v-layout>
 </template>
+
 <script setup>
-const itens = [
-  {
-    title: 'Dashboard',
-    value: 'dashboard',
-  },
-  {
-    title: 'Categorias',
-    value: 'categorias',
-  },
-  {
-    title: 'Produtos',
-    value: 'produtos',
-  },
-]
+import { computed } from 'vue'
+import { useTheme } from 'vuetify'
+
+const theme = useTheme()
+const isDark = computed(() => theme.global.current.value.dark)
+
+function toggleTheme() {
+  theme.global.name.value = isDark.value ? 'light' : 'dark'
+}
 </script>
+
+<style scoped>
+.auth-layout {
+  min-height: 100vh;
+  background: var(--bg-secondary);
+}
+
+.auth-navbar {
+  background: var(--bg-primary) !important;
+  border-bottom: var(--border-width) solid var(--border-color);
+}
+
+:deep(.v-toolbar-title) {
+  color: var(--color-primary);
+}
+
+:deep(.v-main) {
+  min-height: calc(100vh - 64px);
+}
+</style>
