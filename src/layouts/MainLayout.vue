@@ -4,6 +4,9 @@
       <v-app-bar-nav-icon v-if="!mdAndUp" @click="drawer = !drawer" />
       <v-toolbar-title class="font-weight-bold"> Projeto Vuetify </v-toolbar-title>
       <v-spacer />
+      <v-btn icon @click="toggleTheme" size="small">
+        <v-icon>{{ isDark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+      </v-btn>
       <v-btn icon="mdi-logout" @click="confirmLogout" />
     </v-app-bar>
 
@@ -66,8 +69,15 @@
 import { useRouter } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import { useNotifications } from '@/composables/useNotifications'
+import { useTheme } from 'vuetify'
 import useAuth from '@/composables/useAuth'
 
+const theme = useTheme()
+const isDark = computed(() => theme.global.current.value.dark)
+
+function toggleTheme() {
+  theme.global.name.value = isDark.value ? 'light' : 'dark'
+}
 const router = useRouter()
 const { doLogout, getUser } = useAuth()
 const notification = useNotifications()
@@ -81,7 +91,7 @@ watch(mdAndUp, (isDesktop) => {
   drawer.value = isDesktop
 })
 
-const defaultAvatar = '/images/default-avatar.png'
+const defaultAvatar = '/undraw/avatar.svg'
 const user = ref({ name: '', email: '' })
 
 const getUserData = async () => {

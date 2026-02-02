@@ -1,24 +1,28 @@
 <template>
   <v-container class="login-container pa-0 h-100" fluid>
     <v-row no-gutters class="h-100">
-      <v-col class="left-panel d-none d-md-flex align-center justify-center" cols="12" md="6">
+      <!-- Painel esquerdo (branding) -->
+      <v-col cols="12" md="6" class="left-panel d-none d-md-flex align-center justify-center">
         <div class="text-center px-8">
-          <v-img class="mx-auto mb-8" max-width="380" src="/undraw/loginimage.svg"></v-img>
-          <h1 class="text-h3 font-weight-bold mb-3 text-white">Vue Market</h1>
-          <p class="text-h6 font-weight-regular text-white">
-            Sua plataforma de gerenciamento de estoque
-          </p>
+          <v-img src="/undraw/loginimage.svg" max-width="380" class="mx-auto mb-8" />
+
+          <h1 class="text-h3 font-weight-bold mb-3 text-white">VuEstoque</h1>
+
+          <p class="text-h6 text-white opacity-80">Sua plataforma de gerenciamento de estoque</p>
         </div>
       </v-col>
 
-      <v-col class="right-panel d-flex align-center justify-center" cols="12" md="6">
+      <!-- Painel direito (formulário) -->
+      <v-col cols="12" md="6" class="right-panel d-flex align-center justify-center">
         <div class="form-wrapper pa-6 pa-sm-8 w-100">
+          <!-- Branding mobile -->
           <div class="text-center mb-8 d-md-none">
-            <h2 class="text-primary text-h4 font-weight-bold mb-2">Vue Market</h2>
-            <p class="text-grey-darken-1">Gerenciamento de estoque</p>
+            <h2 class="text-h4 font-weight-bold text-primary mb-1">VuEstoque</h2>
+            <p class="text-body-2 text-grey-darken-1">Gerenciamento de estoque</p>
           </div>
 
           <v-form v-model="valid" @submit.prevent="handleSubmit">
+            <!-- Título -->
             <div class="text-center mb-8">
               <h2 class="text-h4 font-weight-bold mb-2">Bem-vindo de volta</h2>
               <p class="text-body-1 text-grey-darken-1">
@@ -26,41 +30,45 @@
               </p>
             </div>
 
+            <!-- Email -->
             <v-text-field
               v-model="formData.email"
-              :rules="[rules.required, rules.email]"
               label="E-mail"
               placeholder="seu@email.com"
-              variant="outlined"
               prepend-inner-icon="mdi-email-outline"
+              variant="outlined"
               color="primary"
-              class="mb-4"
               density="comfortable"
+              :rules="[rules.required, rules.email]"
               hide-details="auto"
-            ></v-text-field>
+              class="mb-4"
+            />
 
+            <!-- Senha -->
             <v-text-field
               v-model="formData.password"
-              :rules="[rules.required, rules.password]"
               label="Senha"
               placeholder="Digite sua senha"
-              variant="outlined"
               prepend-inner-icon="mdi-lock-outline"
-              :append-inner-icon="showpassword ? 'mdi-eye-off' : 'mdi-eye'"
-              :type="showpassword ? 'text' : 'password'"
+              :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="showPassword ? 'text' : 'password'"
+              variant="outlined"
               color="primary"
-              class="mb-2"
               density="comfortable"
+              :rules="[rules.required, rules.password]"
               hide-details="auto"
-              @click:append-inner="showpassword = !showpassword"
-            ></v-text-field>
+              class="mb-2"
+              @click:append-inner="showPassword = !showPassword"
+            />
 
+            <!-- Esqueceu a senha -->
             <div class="text-right mb-6">
-              <v-btn variant="text" color="primary" size="small" class="text-caption">
+              <v-btn variant="text" color="secondary" size="small" class="text-caption">
                 Esqueceu a senha?
               </v-btn>
             </div>
 
+            <!-- Alerta -->
             <v-alert
               v-if="!valid && formData.email && formData.password"
               type="warning"
@@ -71,6 +79,7 @@
               Preencha todos os campos corretamente
             </v-alert>
 
+            <!-- Entrar (ação principal) -->
             <v-btn
               block
               color="primary"
@@ -81,12 +90,15 @@
             >
               Entrar
             </v-btn>
-            <v-divider class="my-6"></v-divider>
+
+            <v-divider class="my-6" />
+
+            <!-- Criar conta (ação secundária) -->
             <v-btn
               block
-              color="primary"
-              size="large"
+              color="secondary"
               variant="outlined"
+              size="large"
               :to="{ name: 'register' }"
               class="text-none"
             >
@@ -100,47 +112,51 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
 import { useFormRules } from '@/composables/useFormRules'
 import { useNotifications } from '@/composables/useNotifications'
-import { useRouter } from 'vue-router'
 import useAuth from '@/composables/useAuth'
 
+const router = useRouter()
 const { doLogin } = useAuth()
 const notification = useNotifications()
-const router = useRouter()
 
 const valid = ref(false)
+const showPassword = ref(false)
+
 const rules = useFormRules()
-const showpassword = ref(false)
 
 const formData = ref({
-  password: '',
   email: '',
+  password: '',
 })
 
 async function handleSubmit() {
   try {
-    const { data, success, status, message } = await doLogin(formData.value)
+    const { success, message } = await doLogin(formData.value)
+
     if (success) {
       notification.notifySuccess('Login realizado com sucesso!')
       router.push({ name: 'dashboard' })
     } else {
-      notification.notifyError('Houve algum problema ao logar: ' + message)
+      notification.notifyError(message || 'Erro ao realizar login')
     }
-  } catch (e) {
-    console.log('erro', e)
-    notification.notifyError('Erro ao realizar login. Tente novamente.')
+  } catch {
+    notification.notifyError('Erro inesperado ao realizar login')
   }
 }
 </script>
 
 <style scoped>
+/* =========================
+   LAYOUT
+   ========================= */
 .login-container {
   background: var(--bg-secondary);
 }
 
 .left-panel {
-  background: var(--bg-gradient);
+  background: var(--color-primary);
 }
 
 .right-panel {
@@ -151,11 +167,14 @@ async function handleSubmit() {
   max-width: 480px;
 }
 
-:deep(.v-text-field .v-field:hover) {
+/* =========================
+   INTERAÇÕES
+   ========================= */
+:deep(.v-field:hover) {
   box-shadow: var(--shadow-sm);
 }
 
-:deep(.v-text-field .v-field--focused) {
+:deep(.v-field--focused) {
   box-shadow: var(--shadow-primary);
 }
 
@@ -163,6 +182,9 @@ async function handleSubmit() {
   box-shadow: var(--shadow-md);
 }
 
+/* =========================
+   RESPONSIVO
+   ========================= */
 @media (max-width: 959px) {
   .login-container {
     background: var(--bg-primary);

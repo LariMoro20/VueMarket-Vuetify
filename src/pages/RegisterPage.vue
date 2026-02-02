@@ -1,29 +1,34 @@
 <template>
   <v-container class="register-container pa-0 h-100" fluid>
-    <v-btn icon class="theme-toggle" @click="toggleTheme" size="small">
+    <v-btn
+      icon
+      class="theme-toggle"
+      @click="toggleTheme"
+      size="small"
+      color="secondary"
+      variant="tonal"
+    >
       <v-icon>{{ isDark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
     </v-btn>
 
     <v-row no-gutters class="h-100">
-      <v-col class="left-panel d-none d-md-flex align-center justify-center" cols="12" md="6">
+      <v-col cols="12" md="6" class="left-panel d-none d-md-flex align-center justify-center">
         <div class="text-center px-8">
           <v-img
-            class="mx-auto mb-8"
+            src="/undraw/registerpage.svg"
             max-width="300"
             max-height="300"
-            src="/undraw/registerpage.svg"
-          ></v-img>
-          <h1 class="text-h3 font-weight-bold mb-3 text-white">Vue Market</h1>
-          <p class="text-h6 font-weight-regular text-white">
-            Sua plataforma de gerenciamento de estoque
-          </p>
+            class="mx-auto mb-8"
+          />
+          <h1 class="text-h3 font-weight-bold mb-3 text-white">VuEstoque</h1>
+          <p class="text-h6 text-white opacity-80">Sua plataforma de gerenciamento de estoque</p>
         </div>
       </v-col>
 
-      <v-col class="right-panel d-flex align-center justify-center" cols="12" md="6">
+      <v-col cols="12" md="6" class="right-panel d-flex align-center justify-center">
         <div class="form-wrapper pa-6 pa-sm-8 w-100">
           <div class="text-center mb-8 d-md-none">
-            <h2 class="text-primary text-h4 font-weight-bold mb-2">Vue Market</h2>
+            <h2 class="text-primary text-h4 font-weight-bold mb-2">VuEstoque</h2>
             <p class="text-grey-darken-1">Gerenciamento de estoque</p>
           </div>
 
@@ -41,10 +46,10 @@
               variant="outlined"
               prepend-inner-icon="mdi-account-outline"
               color="primary"
-              class="mb-4"
               density="comfortable"
               hide-details="auto"
-            ></v-text-field>
+              class="mb-4"
+            />
 
             <v-text-field
               v-model="formData.email"
@@ -54,10 +59,10 @@
               variant="outlined"
               prepend-inner-icon="mdi-email-outline"
               color="primary"
-              class="mb-4"
               density="comfortable"
               hide-details="auto"
-            ></v-text-field>
+              class="mb-4"
+            />
 
             <v-text-field
               v-model="formData.password"
@@ -66,14 +71,14 @@
               placeholder="Digite sua senha"
               variant="outlined"
               prepend-inner-icon="mdi-lock-outline"
-              :append-inner-icon="showpassword ? 'mdi-eye-off' : 'mdi-eye'"
-              :type="showpassword ? 'text' : 'password'"
+              :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="showPassword ? 'text' : 'password'"
               color="primary"
-              class="mb-6"
               density="comfortable"
               hide-details="auto"
-              @click:append-inner="showpassword = !showpassword"
-            ></v-text-field>
+              class="mb-6"
+              @click:append-inner="showPassword = !showPassword"
+            />
 
             <v-alert
               v-if="!valid && (formData.name || formData.email || formData.password)"
@@ -96,11 +101,11 @@
               Registrar
             </v-btn>
 
-            <v-divider class="my-6"></v-divider>
+            <v-divider class="my-6" />
 
             <v-btn
               block
-              color="primary"
+              color="secondary"
               size="large"
               variant="outlined"
               :to="{ name: 'login' }"
@@ -130,12 +135,12 @@ const theme = useTheme()
 
 const valid = ref(false)
 const rules = useFormRules()
-const showpassword = ref(false)
+const showPassword = ref(false)
 
 const formData = ref({
   name: '',
-  password: '',
   email: '',
+  password: '',
 })
 
 const isDark = computed(() => theme.global.current.value.dark)
@@ -146,15 +151,14 @@ function toggleTheme() {
 
 async function handleSubmit() {
   try {
-    const { data, success, status, message } = await createUser(formData.value)
+    const { success, message } = await createUser(formData.value)
     if (success) {
       notification.notifySuccess('Cadastro realizado com sucesso!')
       router.push({ name: 'login' })
     } else {
-      notification.notifyError('Houve algum problema ao cadastrar: ' + message)
+      notification.notifyError(message || 'Erro ao realizar cadastro')
     }
-  } catch (e) {
-    console.log('erro', e)
+  } catch {
     notification.notifyError('Erro ao realizar cadastro. Tente novamente.')
   }
 }
@@ -167,7 +171,7 @@ async function handleSubmit() {
 }
 
 .left-panel {
-  background: var(--bg-gradient);
+  background: var(--color-primary);
 }
 
 .right-panel {
@@ -178,11 +182,11 @@ async function handleSubmit() {
   max-width: 480px;
 }
 
-:deep(.v-text-field .v-field:hover) {
+:deep(.v-field:hover) {
   box-shadow: var(--shadow-sm);
 }
 
-:deep(.v-text-field .v-field--focused) {
+:deep(.v-field--focused) {
   box-shadow: var(--shadow-primary);
 }
 
@@ -190,16 +194,16 @@ async function handleSubmit() {
   box-shadow: var(--shadow-md);
 }
 
-@media (max-width: 959px) {
-  .register-container {
-    background: var(--bg-primary);
-  }
-}
-
 .theme-toggle {
   position: absolute;
   top: var(--spacing-md);
   right: var(--spacing-md);
   z-index: 10;
+}
+
+@media (max-width: 959px) {
+  .register-container {
+    background: var(--bg-primary);
+  }
 }
 </style>

@@ -8,12 +8,13 @@
       <v-card-text>
         <v-form v-model="formValid">
           <v-row>
-            <v-col cols="12">
+            <v-col cols="12" md="6">
               <v-text-field
                 v-model="form.name"
                 label="Nome *"
                 :rules="[rules.required]"
                 variant="outlined"
+                hide-details="auto"
               />
             </v-col>
 
@@ -25,6 +26,7 @@
                 prefix="R$"
                 :rules="[rules.required]"
                 variant="outlined"
+                hide-details="auto"
               />
             </v-col>
 
@@ -37,6 +39,7 @@
                 item-value="id"
                 :rules="[rules.required]"
                 variant="outlined"
+                hide-details="auto"
               />
             </v-col>
 
@@ -49,6 +52,7 @@
                 item-value="value"
                 :rules="[rules.required]"
                 variant="outlined"
+                hide-details="auto"
               />
             </v-col>
 
@@ -58,6 +62,7 @@
                 label="Descrição"
                 rows="3"
                 variant="outlined"
+                hide-details="auto"
               />
             </v-col>
           </v-row>
@@ -66,11 +71,9 @@
 
       <v-card-actions>
         <v-spacer />
-
         <v-btn variant="text" color="grey" :disabled="saving" @click="handleClose">
           Cancelar
         </v-btn>
-
         <v-btn
           color="primary"
           variant="elevated"

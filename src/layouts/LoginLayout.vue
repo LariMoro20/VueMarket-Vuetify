@@ -1,7 +1,9 @@
 <template>
   <v-layout class="auth-layout">
     <v-app-bar elevation="0" class="auth-navbar">
-      <v-toolbar-title class="text-h6 font-weight-bold"> Vue Market </v-toolbar-title>
+      <v-toolbar-title color="primary" class="text-h6 font-weight-bold">
+        VuEstoque
+      </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -37,10 +39,6 @@ function toggleTheme() {
 .auth-navbar {
   background: var(--bg-primary) !important;
   border-bottom: var(--border-width) solid var(--border-color);
-}
-
-:deep(.v-toolbar-title) {
-  color: var(--color-primary);
 }
 
 :deep(.v-main) {

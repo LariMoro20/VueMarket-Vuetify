@@ -12,6 +12,7 @@
             :rules="[rules.required]"
             variant="outlined"
             class="mb-3"
+            hide-details="auto"
           ></v-text-field>
           <v-select
             v-model="form.status"
@@ -21,6 +22,7 @@
             item-value="value"
             :rules="[rules.required]"
             variant="outlined"
+            hide-details="auto"
           ></v-select>
         </v-form>
       </v-card-text>

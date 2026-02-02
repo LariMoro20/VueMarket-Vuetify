@@ -12,7 +12,6 @@
       <v-row>
         <v-col cols="12" lg="8">
           <v-skeleton-loader type="card" class="mb-4" />
-
           <v-skeleton-loader type="table" />
         </v-col>
 
@@ -38,6 +37,12 @@
         </v-col>
       </v-row>
 
+      <v-row class="mb-4">
+        <v-col cols="12">
+          <QuickActionsCard @has-change="getDashData" />
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col cols="12" lg="8">
           <v-card elevation="2">
@@ -54,53 +59,39 @@
                   <tr>
                     <th class="text-left text-medium-emphasis">Produto</th>
                     <th class="text-left text-medium-emphasis">Categoria</th>
-                    <th class="text-left text-medium-emphasis">Atualizado em</th>
                     <th class="text-left text-medium-emphasis">Status</th>
+                    <th class="text-left text-medium-emphasis">Atualizado em</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   <tr v-for="product in recentProducts" :key="product.id" class="table-row">
-                    <td class="font-weight-medium">
-                      {{ product.name }}
-                    </td>
-
+                    <td class="font-weight-medium">{{ product.name }}</td>
                     <td>
                       <v-chip size="small" variant="tonal" color="primary">
                         {{ product.categoryName }}
                       </v-chip>
                     </td>
-
-                    <td class="text-medium-emphasis">
-                      {{ product.formattedDate }}
-                    </td>
-
-                    <td>
-                      <ChipStatus :status="product.status" />
-                    </td>
+                    <td><ChipStatus :status="product.status" /></td>
+                    <td class="text-medium-emphasis">{{ product.formattedDate }}</td>
                   </tr>
                 </tbody>
               </v-table>
             </v-card-text>
           </v-card>
+        </v-col>
 
-          <v-card elevation="2" class="mt-4">
+        <v-col cols="12" lg="4">
+          <v-card elevation="2">
             <v-card-title class="d-flex align-center justify-space-between">
-              <span class="text-h6 font-weight-medium"> Distribuição por Categoria </span>
+              <span class="text-h6 font-weight-medium">Distribuição por Categoria</span>
             </v-card-title>
-
             <v-divider />
-
             <v-card-text class="pt-4">
               <div v-for="cat in categoryDistribution" :key="cat.name" class="mb-5">
                 <div class="d-flex justify-space-between align-center mb-1">
-                  <span class="font-weight-medium">
-                    {{ cat.name }}
-                  </span>
-
-                  <span class="text-caption text-medium-emphasis"> {{ cat.count }} produtos </span>
+                  <span class="font-weight-medium">{{ cat.name }}</span>
+                  <span class="text-caption text-medium-emphasis">{{ cat.count }} produtos</span>
                 </div>
-
                 <v-progress-linear
                   :model-value="(cat.count / metrics.totalProducts) * 100"
                   :color="cat.color"
@@ -112,8 +103,6 @@
             </v-card-text>
           </v-card>
         </v-col>
-
-        <QuickActionsCard @has-change="getDashData" />
       </v-row>
     </div>
   </ContainerDefault>
@@ -135,6 +124,7 @@ const metrics = ref({
 
 const recentProducts = ref([])
 const categoryDistribution = ref([])
+
 const metricCards = computed(() => [
   {
     title: 'Total de Produtos',
@@ -175,9 +165,6 @@ const getDashData = async () => {
   categoryDistribution.value = response.categoryDistribution
   loading.value = false
 }
-onMounted(async () => {
-  getDashData()
-})
-</script>
 
-<style scoped></style>
+onMounted(getDashData)
+</script>
